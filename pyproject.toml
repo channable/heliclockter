@@ -7,12 +7,13 @@ name = 'heliclockter'
 description = 'A robust way of dealing with datetimes in python by ensuring all datetimes are timezone aware at runtime.'
 readme = 'README.md'
 requires-python = '>=3.9'
-keywords = ['datetime', 'timezone', 'timezones', 'tz', 'tzinfo']
+keywords = ['datetime', 'heliclockter', 'timezone', 'timezones', 'tz', 'tzinfo']
 license = {file = 'LICENSE'}
 classifiers = [
     'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Developers',
     'Natural Language :: English',
+    'Operating System :: Unix',
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
@@ -22,6 +23,9 @@ classifiers = [
 dependencies = []
 authors = [{'name' = 'Peter Nilsson', 'email' = 'peter.nilsson@channable.com'}]
 dynamic = ['version']
+
+[project.urls]
+Homepage = 'https://github.com/channable/heliclockter'
 
 [tool.setuptools.dynamic]
 version = {attr = 'heliclockter.__version__'}

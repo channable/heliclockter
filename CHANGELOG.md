@@ -1,3 +1,16 @@
+1.0.1
+-----
+
+Released 2022-11-23.
+
+**Breaking changes**:
+
+- None.
+
+Release highlights:
+
+- Enrich project metadata
+
 1.0.0
 -----
 

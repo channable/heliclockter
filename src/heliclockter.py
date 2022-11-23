@@ -32,7 +32,7 @@ timedelta = _datetime.timedelta
 
 tz_local = cast(ZoneInfo, _datetime.datetime.now().astimezone().tzinfo)
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 
 DateTimeTzT = TypeVar('DateTimeTzT', bound='datetime_tz')

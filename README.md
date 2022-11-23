@@ -103,3 +103,8 @@ you can easily create a `datetime_tz` instance using your own defined classes:
 aware_dt = datetime_cet.strptime('2022-11-04T15:49:29', '%Y-%m-%dT%H:%M:%S')
 # datetime_cet(2022, 11, 4, 15, 49, 29, tzinfo=zoneinfo.ZoneInfo(key='CET'))
 ```
+
+About the name
+--------------
+
+`heliclockter` is a word play of "clock" and "helicopter". The module aims to guide the user and help them make little to no mistakes when handling datetimes, just like a [helicopter parent](https://en.wikipedia.org/wiki/Helicopter_parent) strictly supervises their children.
