@@ -1,0 +1,113 @@
+[build-system]
+requires = ['setuptools', 'setuptools-scm']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'heliclockter'
+description = 'A robust way of dealing with datetimes in python by ensuring all datetimes are timezone aware at runtime.'
+readme = 'README.md'
+requires-python = '>=3.9'
+keywords = ['datetime', 'timezone', 'timezones', 'tz', 'tzinfo']
+license = {file = 'LICENSE'}
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Typing :: Typed'
+]
+dependencies = []
+authors = [{'name' = 'Peter Nilsson', 'email' = 'peter.nilsson@channable.com'}]
+dynamic = ['version']
+
+[tool.setuptools.dynamic]
+version = {attr = 'heliclockter.__version__'}
+
+[project.optional-dependencies]
+all = ['bandit', 'black', 'mypy', 'pydantic', 'pylint', 'pytest', 'parameterized', 'toml']
+
+[tool.black]
+target-version = ['py39']
+line-length = 100
+skip-string-normalization = true
+exclude = '(^\..+|local_cache|venv)'
+workers = 4
+
+[tool.isort]
+profile = 'black'
+multi_line_output = 3
+line_length = 100
+atomic = true
+skip_gitignore = true
+case_sensitive = true
+known_heliclockter = 'heliclockter'
+sections = 'FUTURE,STDLIB,THIRDPARTY,HELICLOCKTER,FIRSTPARTY,LOCALFOLDER'
+
+[tool.pytest.ini_options]
+addopts = [
+    '--junitxml=.junit_report.xml',
+]
+junit_family = 'xunit2'
+
+[tool.mypy]
+mypy_path = './stubs/'
+plugins = ['pydantic.mypy']
+junit_xml = '.junit_report.xml'
+
+# Instead of passing --strict we specify all checks here. Strict mode is subject
+# to change with new versions, so this way can more safely upgrade.
+follow_imports = 'silent'
+disallow_any_generics = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_decorators = false
+warn_unused_configs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+no_implicit_reexport = true
+show_error_codes = true
+exclude = ['(build)/$', '(venv)/$']
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
+
+[tool.pylint]
+[tool.pylint.master]
+jobs = 4
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = [
+    'format', # Because we use black.
+    'design', # Because we do code review.
+    'invalid-name', # Should come up in code review.
+    'missing-docstring', # Should come up in code review.
+    'unsubscriptable-object', # Because it interferes with type annotations.
+    'ungrouped-imports', # Because it gives a false positive if you have both `import a` and `from a import ...`.
+    'not-callable', # Mypy is better at checking this.
+    'undefined-variable', # Mypy is better at checking this.
+    'no-member', # Mypy is better at checking this.
+    'no-name-in-module', # Gives false positives.
+    'invalid-unary-operand-type', # mypy checks this as well, but is better at it.
+    'duplicate-code', # Gives a lot of false positives
+    'typevar-name-incorrect-variance', # Would result in very long type names
+]
+
+[tool.bandit]
+# Allow asserts
+skips = [
+    'B101',
+    'B106',
+    'B108'
+]
+targets = 'heliclockter'
