@@ -1,3 +1,16 @@
+1.0.2
+-----
+
+Released 2022-11-28.
+
+**Breaking changes**:
+
+- None.
+
+Release highlights:
+
+- Fix bug in `datetime_tz.from_datetime()` where if the input datetime is itself a different instance of `datetime_tz` than the class reparsing it an `AssertionError` would be raised.
+
 1.0.1
 -----
 

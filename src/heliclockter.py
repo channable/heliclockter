@@ -32,7 +32,7 @@ timedelta = _datetime.timedelta
 
 tz_local = cast(ZoneInfo, _datetime.datetime.now().astimezone().tzinfo)
 
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
 
 DateTimeTzT = TypeVar('DateTimeTzT', bound='datetime_tz')
@@ -112,7 +112,22 @@ class datetime_tz(_datetime.datetime):
 
         # Case: datetime is aware and the timezone is assumed, enforce that timezone.
         elif (assumed_tz := cls.assumed_timezone_for_timezone_naive_input) is not None:
-            dt = dt.astimezone(assumed_tz)
+            # Case: when `assumed_timezone_for_timezone_naive_input` is declared on the input
+            # dt it cannot be instantiated in a different timezone.
+            if getattr(dt, 'assumed_timezone_for_timezone_naive_input', None) is not None:
+                dt = _datetime.datetime(
+                    year=dt.year,
+                    month=dt.month,
+                    day=dt.day,
+                    hour=dt.hour,
+                    minute=dt.minute,
+                    second=dt.second,
+                    microsecond=dt.microsecond,
+                    tzinfo=dt.tzinfo,
+                ).astimezone(tz=assumed_tz)
+
+            else:
+                dt = dt.astimezone(assumed_tz)
 
         cls.assert_aware_datetime(dt)
         return cls(

@@ -75,6 +75,33 @@ def test_datetime_tz_from_naive_datetime() -> None:
         datetime_tz.from_datetime(input_dt)
 
 
+@parameterized.expand(
+    [
+        (
+            datetime_utc,
+            10,
+            datetime_utc(year=2021, month=1, day=1, hour=10, tzinfo=ZoneInfo('UTC')),
+        ),
+        (
+            datetime_cet,
+            10,
+            datetime_cet(year=2021, month=1, day=1, hour=10, tzinfo=ZoneInfo('CET')),
+        ),
+        (
+            datetime_cet,
+            11,
+            datetime_utc(year=2021, month=1, day=1, hour=10, tzinfo=ZoneInfo('UTC')),
+        ),
+    ]
+)
+def test_from_datetime_tz(
+    expected_dt_class: DatetimeT, expected_hour: int, input_dt: DateTimeTzT
+) -> None:
+    reparsed = expected_dt_class.from_datetime(input_dt)
+    assert isinstance(reparsed, expected_dt_class)
+    assert reparsed.hour == expected_hour
+
+
 def test_datetime_tz_now() -> None:
     with pytest.raises(
         DatetimeTzError,
