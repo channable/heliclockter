@@ -1,3 +1,16 @@
+1.0.3
+-----
+
+Released 2022-11-29.
+
+**Breaking changes**:
+
+- None.
+
+Release highlights:
+
+- Included `py.typed` in packaged release
+
 1.0.2
 -----
 

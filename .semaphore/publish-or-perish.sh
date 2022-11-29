@@ -7,7 +7,7 @@
 set -efuo pipefail
 
 sudo pip install toml
-TAG=v$(grep -Po '__version__ = .\K[0-9\\.]+' src/heliclockter.py)
+TAG=v$(grep -Po '__version__ = .\K[0-9\\.]+' src/heliclockter/__init__.py)
 # If the tag already exist this command will fail and the job will exit
 # without raising an error. Otherwise, we will build the project,
 # publish to PyPi, and push the tag to github.
