@@ -30,6 +30,9 @@ Homepage = 'https://github.com/channable/heliclockter'
 [tool.setuptools.dynamic]
 version = {attr = 'heliclockter.__version__'}
 
+[tool.setuptools.package-data]
+heliclockter = ['py.typed']
+
 [project.optional-dependencies]
 all = ['bandit', 'black', 'mypy', 'pydantic', 'pylint', 'pytest', 'parameterized', 'toml']
 
