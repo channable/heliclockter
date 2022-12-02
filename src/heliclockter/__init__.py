@@ -32,7 +32,7 @@ timedelta = _datetime.timedelta
 
 tz_local = cast(ZoneInfo, _datetime.datetime.now().astimezone().tzinfo)
 
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
 
 DateTimeTzT = TypeVar('DateTimeTzT', bound='datetime_tz')
@@ -98,7 +98,11 @@ class datetime_tz(_datetime.datetime):
 
         @classmethod
         def _validate(cls: Type[DateTimeTzT], v: Any) -> Optional[DateTimeTzT]:
-            return cls.from_datetime(parse_datetime(v)) if v else None
+            if v is None:
+                return None
+
+            dt = v if isinstance(v, _datetime.datetime) else parse_datetime(v)
+            return cls.from_datetime(dt)
 
     @classmethod
     def from_datetime(cls: Type[DateTimeTzT], dt: _datetime.datetime) -> DateTimeTzT:

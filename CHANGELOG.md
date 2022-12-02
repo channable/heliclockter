@@ -1,3 +1,16 @@
+1.0.4
+-----
+
+Released 2022-12-02.
+
+**Breaking changes**:
+
+- None.
+
+Release highlights:
+
+- Allow `pydantic` models to parse `datetime.datetime` input values
+
 1.0.3
 -----
 

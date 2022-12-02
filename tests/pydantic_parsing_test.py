@@ -1,4 +1,4 @@
-from datetime import timezone
+from datetime import datetime, timezone
 from typing import Union
 from zoneinfo import ZoneInfo
 
@@ -117,3 +117,14 @@ def test_parse_datetime_utc_as_datetime_tz() -> None:
 def test_parse_datetime_tz_without_timezone() -> None:
     with pytest.raises(ValidationError):
         DatetimeTZModel.parse_obj({'dt': '2021-01-10T10:00:00'})
+
+
+def test_parse_datetime_instance() -> None:
+    dt = datetime(2021, 1, 10, 10, 0, 0, tzinfo=ZoneInfo('UTC'))
+    DatetimeTZModel.parse_obj({'dt': dt})
+
+    parsed_tz_model = DatetimeTZModel(dt=dt)  # type: ignore[arg-type]
+    assert isinstance(parsed_tz_model.dt, datetime_tz)
+
+    parsed_utc_model = DatetimeUTCModel(dt=dt)  # type: ignore[arg-type]
+    assert isinstance(parsed_utc_model.dt, datetime_utc)
