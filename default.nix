@@ -12,26 +12,31 @@ let
       p.pydantic
       p.pylint
       p.pytest
-      # TODO: actually add to overlay or nixpkgs
-      # p.parametrized
+      # TODO: must be removed in favor of pytest.mark.parametrize
+      p.parameterized
       p.toml
+      p.tkinter
+      p.testscenarios
+      p.testresources
+      p.fixtures
+      p.distutils_extra
     ]);
 
     # Environment in use by default when running commands via `nix shell`.
     # This can also be used on CI to run tests and style checks.
     defaultEnv = pkgs.buildEnv {
-        name = "heliclockter-env-default";
-        paths = with pkgs; [
-            # Python dependencies
-            pythonEnv
+      name = "heliclockter-env-default";
+      paths = with pkgs; [
+          # Python dependencies
+          pythonEnv
 
-            # Manage nix pins
-            niv
-            nvd
-        ];
+          # Manage nix pins
+          niv
+          nvd
+      ];
     };
 
-    heliclockter = pkgs.callPackage ./nix/heliclockter.nix { inherit python; };
+    heliclockter = pkgs.pythonChannable.pkgs.callPackage ./nix/heliclockter.nix { };
 
     # Lookup for the environments defined in this file. This is used below
     # to allow the user to override which set of dependencies to use.
