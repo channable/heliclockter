@@ -3,7 +3,6 @@ let
   sources = import ./sources.nix;
   pythonOverlay = import ./python-overlay.nix {
     inherit sources;
-    pkgs = self;
   };
 in
 {

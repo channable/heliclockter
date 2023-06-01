@@ -6,14 +6,13 @@ let
     python = pkgs.pythonChannable;
 
     pythonEnv = python.withPackages (p: [
+      heliclockter
       p.bandit
       p.black
       p.mypy
       p.pydantic
       p.pylint
       p.pytest
-      # TODO: must be removed in favor of pytest.mark.parametrize
-      p.parameterized
       p.toml
       p.tkinter
       p.testscenarios

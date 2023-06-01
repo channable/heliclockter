@@ -3,7 +3,6 @@ from typing import Union
 from zoneinfo import ZoneInfo
 
 import pytest
-from parameterized import parameterized  # type: ignore[import]
 from pydantic import BaseModel, ValidationError
 
 from heliclockter import DateTimeTzT, datetime_local, datetime_tz, datetime_utc, timedelta
@@ -35,7 +34,7 @@ class DatetimeDefaultObject(BaseModel):
 TestModelT = Union[DatetimeTZModel, DatetimeUTCModel, DatetimeCETModel]
 
 
-@parameterized.expand(
+@pytest.mark.parametrize("test_str,expectation,model",
     [
         # UTC tests
         (

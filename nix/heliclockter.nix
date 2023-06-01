@@ -1,21 +1,22 @@
 { buildPythonPackage
-# , setuptools
+, setuptools
+, pytest
 , fetchPypi
 , pythonOlder
 }:
 
-{
-  heliclockter = buildPythonPackage rec {
+buildPythonPackage {
     format = "pyproject";
     pname = "heliclockter";
     version = "1.0.4";
 
     disabled = pythonOlder "3.7";
 
-    # propagatedBuildInputs = [
-    #   setuptools
-    # ];
+    checkInputs = [ pytest ];
+
+    propagatedBuildInputs = [
+      setuptools
+    ];
 
     src = ../.;
-  };
 }

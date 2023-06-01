@@ -1,11 +1,11 @@
 from zoneinfo import ZoneInfo
 
-from parameterized import parameterized  # type: ignore[import]
+import pytest
 
 from heliclockter import datetime_tz, datetime_utc
 
 
-@parameterized.expand(
+@pytest.mark.parametrize("dt",
     [
         (
             datetime_utc(2021, 1, 10, 9, 00, 00, tzinfo=ZoneInfo('UTC')),

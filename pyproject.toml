@@ -34,7 +34,7 @@ version = {attr = 'heliclockter.__version__'}
 heliclockter = ['py.typed']
 
 [project.optional-dependencies]
-all = ['bandit', 'black', 'mypy', 'pydantic', 'pylint', 'pytest', 'parameterized', 'toml']
+all = ['bandit', 'black', 'mypy', 'pydantic', 'pylint', 'pytest', 'toml']
 
 [tool.black]
 target-version = ['py39']

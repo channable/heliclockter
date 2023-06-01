@@ -1,6 +1,4 @@
-{ version }:
-let
-  package = import ./nix/package.nix { inherit version; };
-in {
-  heliclockter = package.package;
+{ version, pkgs ? import ./nix/nixpkgs-pinned.nix { } }:
+{
+  heliclockter = pkgs.pythonChannable.pkgs.callPackage ./nix/heliclockter.nix { };
 }

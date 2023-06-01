@@ -4,7 +4,6 @@ from typing import Optional, Type, Union
 from zoneinfo import ZoneInfo
 
 import pytest
-from parameterized import parameterized  # type: ignore[import]
 
 from heliclockter import (
     DateTimeTzT,
@@ -21,7 +20,7 @@ from tests.shared import datetime_cet
 DatetimeT = Union[Type[datetime_tz], Type[datetime_cet], Type[datetime_utc]]
 
 
-@parameterized.expand(
+@pytest.mark.parametrize("input_tz,expected_dt_class,expected_hour",
     [
         # Tests for datetime_tz. Parsing datetime_tz from `datetime` should not modify hours.
         (ZoneInfo('CET'), datetime_tz, 10),
@@ -75,7 +74,7 @@ def test_datetime_tz_from_naive_datetime() -> None:
         datetime_tz.from_datetime(input_dt)
 
 
-@parameterized.expand(
+@pytest.mark.parametrize("expected_dt_class,expected_hour,input_dt",
     [
         (
             datetime_utc,
@@ -128,7 +127,7 @@ def test_deepcopy_datetime_tz() -> None:
     assert isinstance(dt_deep_copied, datetime_tz)
 
 
-@parameterized.expand(
+@pytest.mark.parametrize("dt_string,fmt,dt_class,expected_dt",
     [
         # UTC naive tests
         (
@@ -221,7 +220,7 @@ def test_strptime_datetime_tz_naive_dt_string() -> None:
         datetime_tz.strptime('2021-01-10 09:00', '%Y-%m-%d %H:%M')
 
 
-@parameterized.expand(
+@pytest.mark.parametrize("timestamp,expected_dt",
     [
         (1609491600.0, datetime_utc(2021, 1, 1, 9, 0, tzinfo=ZoneInfo('UTC'))),
         (1625126400.0, datetime_utc(2021, 7, 1, 8, 0, tzinfo=ZoneInfo('UTC'))),
@@ -234,17 +233,17 @@ def test_fromtimestamp(timestamp: float, expected_dt: datetime_utc) -> None:
     assert parsed_dt == expected_dt
 
 
-@parameterized.expand(
+@pytest.mark.parametrize("dt_class,days,weeks,tz",
     [
-        (datetime_utc, 2),
-        (datetime_utc, -2),
-        (datetime_utc, 0, 2),
-        (datetime_cet, 2),
-        (datetime_cet, -2),
-        (datetime_cet, 0, 2),
-        (datetime_local, 2),
-        (datetime_local, -2),
-        (datetime_local, 0, 2),
+        (datetime_utc, 2, 0, None),
+        (datetime_utc, -2, 0, None),
+        (datetime_utc, 0, 2, None),
+        (datetime_cet, 2, 0, None),
+        (datetime_cet, -2, 0, None),
+        (datetime_cet, 0, 2, None),
+        (datetime_local, 2, 0, None),
+        (datetime_local, -2, 0, None),
+        (datetime_local, 0, 2, None),
         (datetime_tz, 2, 0, ZoneInfo('EST')),
         (datetime_tz, -2, 0, ZoneInfo('EST')),
         (datetime_tz, 0, 2, ZoneInfo('EST')),

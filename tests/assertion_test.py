@@ -2,12 +2,11 @@ import datetime
 from zoneinfo import ZoneInfo
 
 import pytest
-from parameterized import parameterized  # type: ignore[import]
 
 from heliclockter import datetime_tz, timedelta, tz_local
 
 
-@parameterized.expand(
+@pytest.mark.parametrize("dt",
     [
         (datetime.datetime(2021, 1, 1, 10, tzinfo=tz_local),),
         (datetime.datetime(2021, 1, 1, 10, tzinfo=ZoneInfo('CET')),),
