@@ -16,12 +16,23 @@ from typing import (
 from zoneinfo import ZoneInfo
 
 # We don't require pydantic as a dependency, but add validate logic if it exists.
+# `parse_datetime` doesn't exist in Pydantic v2, so `PYDANTIC_V1_AVAILABLE is False` when
+# pydantic v2 is installed.
 try:
     from pydantic.datetime_parse import parse_datetime
 
-    PYDANTIC_AVAILABLE = True
+    PYDANTIC_V1_AVAILABLE = True
 except ImportError:
-    PYDANTIC_AVAILABLE = False
+    PYDANTIC_V1_AVAILABLE = False
+
+try:
+    from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
+    from pydantic_core import CoreSchema, core_schema
+    from pydantic.json_schema import JsonSchemaValue
+
+    PYDANTIC_V2_AVAILABLE = True
+except ImportError:
+    PYDANTIC_V2_AVAILABLE = False
 
 
 # `date` and `timedelta` are exposed for your convenience in case this module is used in combination
@@ -90,7 +101,7 @@ class datetime_tz(_datetime.datetime):
 
             self.assert_aware_datetime(self)
 
-    if PYDANTIC_AVAILABLE:
+    if PYDANTIC_V1_AVAILABLE:
 
         @classmethod
         def __get_validators__(cls) -> Iterator[Callable[[Any], Optional[datetime_tz]]]:
@@ -103,6 +114,33 @@ class datetime_tz(_datetime.datetime):
 
             dt = v if isinstance(v, _datetime.datetime) else parse_datetime(v)
             return cls.from_datetime(dt)
+
+    elif PYDANTIC_V2_AVAILABLE:
+
+        @classmethod
+        def __get_pydantic_core_schema__(cls, _: Any, __: GetCoreSchemaHandler) -> CoreSchema:
+            from_datetime_schema = core_schema.chain_schema(
+                [
+                    core_schema.datetime_schema(),
+                    core_schema.no_info_plain_validator_function(cls.from_datetime),
+                ]
+            )
+
+            return core_schema.json_or_python_schema(
+                json_schema=from_datetime_schema,
+                python_schema=core_schema.union_schema(
+                    [
+                        core_schema.is_instance_schema(datetime_tz),
+                        from_datetime_schema,
+                    ]
+                ),
+            )
+
+        @classmethod
+        def __get_pydantic_json_schema__(
+            cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
+        ) -> JsonSchemaValue:
+            return handler(core_schema.datetime_schema())
 
     @classmethod
     def from_datetime(cls: Type[DateTimeTzT], dt: _datetime.datetime) -> DateTimeTzT:
