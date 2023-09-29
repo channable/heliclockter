@@ -1,3 +1,18 @@
+1.1.0
+-----
+
+Released 2023-10-02.
+
+**Breaking changes**:
+
+- None
+
+Release highlights:
+
+- Heliclockter now supports Pydantic v2. See the
+  [migration guide](https://docs.pydantic.dev/latest/migration/) on how to migrate to Pydantic v2.
+  Pydantic v1 is still supported for now. 
+
 1.0.4
 -----
 
