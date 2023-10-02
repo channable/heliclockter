@@ -26,7 +26,7 @@ blocks:
             - "python3.9 -m pytest tests"
             # Test without pydantic as well
             - "python3.9 -m pip uninstall pydantic -y"
-            - "python3.9 -m pytest tests --ignore ./tests/pydantic_parsing_test.py"
+            - "python3.9 -m pytest tests --ignore-glob \"./tests/pydantic_*.py\""
 
         - name: "Unit tests 3.10"
           commands:

@@ -93,13 +93,13 @@ TestModelT = Union[DatetimeTZModel, DatetimeUTCModel, DatetimeCETModel]
     ]
 )
 def test_datetime_parsing(test_str: str, expectation: DateTimeTzT, model: TestModelT) -> None:
-    parsed_model = model.parse_obj({'dt': test_str})
+    parsed_model = model.model_validate({'dt': test_str})
     assert isinstance(parsed_model.dt, type(expectation))
     assert parsed_model.dt == expectation
 
 
 def test_datetime_local_parsing() -> None:
-    parsed_model = DatetimeLocalModel.parse_obj({'dt': '2021-01-10T10:00:00-04:00'})
+    parsed_model = DatetimeLocalModel.model_validate({'dt': '2021-01-10T10:00:00-04:00'})
     assert isinstance(parsed_model.dt, datetime_local)
 
 
@@ -116,12 +116,12 @@ def test_parse_datetime_utc_as_datetime_tz() -> None:
 
 def test_parse_datetime_tz_without_timezone() -> None:
     with pytest.raises(ValidationError):
-        DatetimeTZModel.parse_obj({'dt': '2021-01-10T10:00:00'})
+        DatetimeTZModel.model_validate({'dt': '2021-01-10T10:00:00'})
 
 
 def test_parse_datetime_instance() -> None:
     dt = datetime(2021, 1, 10, 10, 0, 0, tzinfo=ZoneInfo('UTC'))
-    DatetimeTZModel.parse_obj({'dt': dt})
+    DatetimeTZModel.model_validate({'dt': dt})
 
     parsed_tz_model = DatetimeTZModel(dt=dt)  # type: ignore[arg-type]
     assert isinstance(parsed_tz_model.dt, datetime_tz)
