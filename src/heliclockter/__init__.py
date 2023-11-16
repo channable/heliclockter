@@ -102,17 +102,19 @@ class datetime_tz(_datetime.datetime):
 
             self.assert_aware_datetime(self)
 
-    @classmethod
-    def __get_validators__(cls) -> Iterator[Callable[[Any], Optional[datetime_tz]]]:
-        yield cls._validate
+    if PYDANTIC_V1_AVAILABLE or PYDANTIC_V2_AVAILABLE:
 
-    @classmethod
-    def _validate(cls: Type[DateTimeTzT], v: Any) -> Optional[DateTimeTzT]:
-        if v is None:
-            return None
+        @classmethod
+        def __get_validators__(cls) -> Iterator[Callable[[Any], Optional[datetime_tz]]]:
+            yield cls._validate
 
-        dt = v if isinstance(v, _datetime.datetime) else parse_datetime(v)
-        return cls.from_datetime(dt)
+        @classmethod
+        def _validate(cls: Type[DateTimeTzT], v: Any) -> Optional[DateTimeTzT]:
+            if v is None:
+                return None
+
+            dt = v if isinstance(v, _datetime.datetime) else parse_datetime(v)
+            return cls.from_datetime(dt)
 
     if PYDANTIC_V2_AVAILABLE:
 
