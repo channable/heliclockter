@@ -1,3 +1,16 @@
+1.2.0
+-----
+
+Released 2023-11-16.
+
+**Breaking changes**:
+
+- None
+
+Release highlights:
+
+- Adds support for using the `pydantic.v1` module from pydantic v2 for backward compatibility.
+
 1.1.0
 -----
 
