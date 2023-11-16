@@ -29,6 +29,7 @@ try:
     from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
     from pydantic_core import CoreSchema, core_schema
     from pydantic.json_schema import JsonSchemaValue
+    from pydantic.v1.datetime_parse import parse_datetime
 
     PYDANTIC_V2_AVAILABLE = True
 except ImportError:
@@ -101,21 +102,19 @@ class datetime_tz(_datetime.datetime):
 
             self.assert_aware_datetime(self)
 
-    if PYDANTIC_V1_AVAILABLE:
+    @classmethod
+    def __get_validators__(cls) -> Iterator[Callable[[Any], Optional[datetime_tz]]]:
+        yield cls._validate
 
-        @classmethod
-        def __get_validators__(cls) -> Iterator[Callable[[Any], Optional[datetime_tz]]]:
-            yield cls._validate
+    @classmethod
+    def _validate(cls: Type[DateTimeTzT], v: Any) -> Optional[DateTimeTzT]:
+        if v is None:
+            return None
 
-        @classmethod
-        def _validate(cls: Type[DateTimeTzT], v: Any) -> Optional[DateTimeTzT]:
-            if v is None:
-                return None
+        dt = v if isinstance(v, _datetime.datetime) else parse_datetime(v)
+        return cls.from_datetime(dt)
 
-            dt = v if isinstance(v, _datetime.datetime) else parse_datetime(v)
-            return cls.from_datetime(dt)
-
-    elif PYDANTIC_V2_AVAILABLE:
+    if PYDANTIC_V2_AVAILABLE:
 
         @classmethod
         def __get_pydantic_core_schema__(cls, _: Any, __: GetCoreSchemaHandler) -> CoreSchema:
