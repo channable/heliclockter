@@ -3,7 +3,7 @@ from typing import Union
 from zoneinfo import ZoneInfo
 
 import pytest
-from parameterized import parameterized  # type: ignore[import]
+from parameterized import parameterized  # type: ignore[import-untyped]
 from pydantic import BaseModel, ValidationError
 
 from heliclockter import DateTimeTzT, datetime_local, datetime_tz, datetime_utc, timedelta

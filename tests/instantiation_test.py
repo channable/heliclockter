@@ -4,7 +4,7 @@ from typing import Optional, Type, Union
 from zoneinfo import ZoneInfo
 
 import pytest
-from parameterized import parameterized  # type: ignore[import]
+from parameterized import parameterized  # type: ignore[import-untyped]
 
 from heliclockter import (
     DateTimeTzT,

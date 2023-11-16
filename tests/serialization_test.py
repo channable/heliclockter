@@ -1,6 +1,6 @@
 from zoneinfo import ZoneInfo
 
-from parameterized import parameterized  # type: ignore[import]
+from parameterized import parameterized  # type: ignore[import-untyped]
 
 from heliclockter import datetime_tz, datetime_utc
 
