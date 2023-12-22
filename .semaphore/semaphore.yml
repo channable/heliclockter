@@ -36,7 +36,12 @@ blocks:
         - name: "Unit tests 3.11"
           commands:
             # Semaphore does not have python3.11, so we run the tests using a Dockerfile
-            - "sudo docker build -t src . && sudo docker run src"
+            - "sudo docker build --build-arg PYTHON_VERSION=3.11.0 -t py311 . && sudo docker run py311"
+
+        - name: "Unit tests 3.12"
+          commands:
+            # Semaphore does not have python3.12, so we run the tests using a Dockerfile
+            - "sudo docker build --build-arg PYTHON_VERSION=3.12.1 -t py312 . && sudo docker run py312"
 
         - name: "Typing"
           commands:
