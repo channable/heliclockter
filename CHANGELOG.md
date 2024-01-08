@@ -1,3 +1,16 @@
+1.3.0
+-----
+
+Released 2024-01-08.
+
+**Breaking changes**:
+
+- None
+
+Release highlights:
+
+- Adds support for python 3.12.
+
 1.2.0
 -----
 
