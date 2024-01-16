@@ -77,6 +77,7 @@ class datetime_tz(_datetime.datetime):
             microsecond: int = 0,
             *,
             tzinfo: _datetime.tzinfo,
+            fold: int = 0,
         ) -> None:
             pass
 
@@ -92,6 +93,7 @@ class datetime_tz(_datetime.datetime):
             second: int = 0,
             microsecond: int = 0,
             tzinfo: _datetime.tzinfo = None,
+            fold: int = 0,
         ) -> None:
             msg = f'{self.__class__} must have a timezone'
             assert tzinfo is not None and self.tzinfo is not None, msg
@@ -167,6 +169,7 @@ class datetime_tz(_datetime.datetime):
                     second=dt.second,
                     microsecond=dt.microsecond,
                     tzinfo=dt.tzinfo,
+                    fold=dt.fold,
                 ).astimezone(tz=assumed_tz)
 
             else:
@@ -182,6 +185,7 @@ class datetime_tz(_datetime.datetime):
             second=dt.second,
             microsecond=dt.microsecond,
             tzinfo=dt.tzinfo,  # type: ignore[arg-type]
+            fold=dt.fold,
         )
 
     @classmethod
@@ -271,6 +275,7 @@ class datetime_tz(_datetime.datetime):
             second=self.second,
             microsecond=self.microsecond,
             tzinfo=self.tzinfo,  # type: ignore[arg-type]
+            fold=self.fold,
         )
 
 
