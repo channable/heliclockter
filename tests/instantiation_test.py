@@ -275,7 +275,13 @@ def test_future_and_past_no_tz() -> None:
 
 
 @parameterized.expand([(0,), (1,)])
-def test_fold(fold: int) -> None:
+def test_fold_tz(fold: int) -> None:
     dt = datetime_tz(2023, 10, 29, 2, 30, fold=fold, tzinfo=ZoneInfo("Europe/Berlin"))
-    iso_offset = "+01:00" if fold == 1 else '+02:00'
-    assert dt.isoformat().endswith(iso_offset)
+    iso = "2023-10-29T02:30:00+01:00" if fold == 1 else '2023-10-29T02:30:00+02:00'
+    assert dt.isoformat() == iso
+
+
+@parameterized.expand([(0,), (1,)])
+def test_fold_utc(fold: int) -> None:
+    dt = datetime_utc(2023, 10, 29, 2, 30, fold=fold, tzinfo=ZoneInfo("UTC"))
+    assert dt.isoformat() == "2023-10-29T02:30:00+00:00"
