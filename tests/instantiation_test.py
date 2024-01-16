@@ -272,3 +272,10 @@ def test_future_and_past_no_tz() -> None:
 
     with pytest.raises(DatetimeTzError, match=error_msg):
         datetime_tz.past(days=2)
+
+
+@parameterized.expand([(0,), (1,)])
+def test_fold(fold: int) -> None:
+    dt = datetime_tz(2023, 10, 29, 2, 30, fold=fold, tzinfo=ZoneInfo("Europe/Berlin"))
+    iso_offset = "+01:00" if fold == 1 else '+02:00'
+    assert dt.isoformat().endswith(iso_offset)
