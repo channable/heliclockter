@@ -15,6 +15,8 @@ from typing import (
 )
 from zoneinfo import ZoneInfo
 
+from .systemtz import SystemTZ
+
 # We don't require pydantic as a dependency, but add validate logic if it exists.
 # `parse_datetime` doesn't exist in Pydantic v2, so `PYDANTIC_V1_AVAILABLE is False` when
 # pydantic v2 is installed.
@@ -41,8 +43,6 @@ except ImportError:
 date = _datetime.date
 timedelta = _datetime.timedelta
 
-
-tz_local = cast(ZoneInfo, _datetime.datetime.now().astimezone().tzinfo)
 
 __version__ = '1.2.0'
 
@@ -292,6 +292,9 @@ class datetime_utc(datetime_tz):
         Parses a timestamp to a timezone aware datetime.
         """
         return cls.from_datetime(_datetime.datetime.fromtimestamp(timestamp, tz=ZoneInfo('UTC')))
+
+
+tz_local = cast(ZoneInfo, SystemTZ(datetime_tz, name='tz_local'))
 
 
 class datetime_local(datetime_tz):
