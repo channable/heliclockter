@@ -8,7 +8,7 @@ from pydantic.v1 import BaseModel, ValidationError
 
 from heliclockter import DateTimeTzT, datetime_local, datetime_tz, datetime_utc, timedelta
 
-from tests.shared import datetime_cet
+from .shared import datetime_cet
 
 
 class DatetimeTZModel(BaseModel):

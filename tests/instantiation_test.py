@@ -16,7 +16,7 @@ from heliclockter import (
     tz_local,
 )
 
-from tests.shared import datetime_cet
+from .shared import datetime_cet
 
 DatetimeT = Union[Type[datetime_tz], Type[datetime_cet], Type[datetime_utc]]
 
