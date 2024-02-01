@@ -3,7 +3,7 @@ name: datetime_tz
 
 agent:
   machine:
-    type: e1-standard-2
+    type: f1-standard-2
     os_image: ubuntu2004
 
 

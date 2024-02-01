@@ -4,6 +4,7 @@ other datetime_tz class because the local timezone depends on the machine that r
 
 Because of this we declare `datetime_cet` here to test with.
 """
+
 from zoneinfo import ZoneInfo
 
 from heliclockter import datetime_tz
