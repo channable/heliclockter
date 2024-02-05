@@ -1,7 +1,7 @@
 1.3.0
 -----
 
-Released 2024-01-08.
+Released 2024-02-05.
 
 **Breaking changes**:
 
@@ -10,6 +10,7 @@ Released 2024-01-08.
 Release highlights:
 
 - Adds support for python 3.12.
+- Adds `fold` to the constructor of `datetime_tz`
 
 1.2.0
 -----
