@@ -4,7 +4,7 @@ name: datetime_tz
 agent:
   machine:
     type: f1-standard-2
-    os_image: ubuntu2004
+    os_image: ubuntu2204
 
 
 blocks:
@@ -21,12 +21,8 @@ blocks:
       jobs:
         - name: "Unit tests 3.9"
           commands:
-            - "export PUBLISH_JUNIT_REPORT=true" # Export junit report from this job
-            - "python3.9 -m pip install -e .[all]"
-            - "python3.9 -m pytest tests"
-            # Test without pydantic as well
-            - "python3.9 -m pip uninstall pydantic -y"
-            - "python3.9 -m pytest tests --ignore-glob \"./tests/pydantic_*.py\""
+            # Semaphore does not have python3.11, so we run the tests using a Dockerfile
+            - "sudo docker build --build-arg PYTHON_VERSION=3.9.13 -t py309 . && sudo docker run py309"
 
         - name: "Unit tests 3.10"
           commands:
@@ -40,8 +36,12 @@ blocks:
 
         - name: "Unit tests 3.12"
           commands:
-            # Semaphore does not have python3.12, so we run the tests using a Dockerfile
-            - "sudo docker build --build-arg PYTHON_VERSION=3.12.1 -t py312 . && sudo docker run py312"
+            - "export PUBLISH_JUNIT_REPORT=true" # Export junit report from this job
+            - "python3.12 -m pip install -e .[all]"
+            - "python3.12 -m pytest tests"
+            # Test without pydantic as well
+            - "python3.12 -m pip uninstall pydantic -y"
+            - "python3.12 -m pytest tests --ignore-glob \"./tests/pydantic_*.py\""
 
         - name: "Unit tests 3.13"
           commands:
