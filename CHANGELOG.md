@@ -1,8 +1,9 @@
 2.1.0
 -----
+Released 2025-09-04
 
 - Support pickling of `datetime_tz` objects
-
+- Support for `astimezone`, which creates a new `datetime_tz`
 
 2.0.0
 -----
