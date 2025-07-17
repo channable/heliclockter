@@ -1,3 +1,9 @@
+2.1.0
+-----
+
+- Support pickling of `datetime_tz` objects
+
+
 2.0.0
 -----
 

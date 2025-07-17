@@ -8,6 +8,7 @@ build/
 venv/
 *.egg-info
 .virtualenv
+.venv
 .pytest_cache
 
 .junit_report.xml

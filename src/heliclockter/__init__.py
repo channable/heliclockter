@@ -80,8 +80,8 @@ class datetime_tz(_datetime.datetime):
         def __init__(  # pylint: disable=unused-argument
             self,
             year: int,
-            month: int,
-            day: int,
+            month: int = None,
+            day: int = None,
             hour: int = 0,
             minute: int = 0,
             second: int = 0,
@@ -90,8 +90,8 @@ class datetime_tz(_datetime.datetime):
             fold: int = 0,
         ) -> None:
             msg = f"{self.__class__} must have a timezone"
-            assert tzinfo is not None and self.tzinfo is not None, msg
-            tz_expected = self.assumed_timezone_for_timezone_naive_input or tzinfo
+            assert self.tzinfo is not None, msg
+            tz_expected = self.assumed_timezone_for_timezone_naive_input or self.tzinfo
 
             msg = f"{self.__class__} got invalid timezone {self.tzinfo!r}, expected {tz_expected!r}"
             assert self.tzinfo == tz_expected, msg
