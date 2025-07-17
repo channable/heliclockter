@@ -261,6 +261,12 @@ class datetime_tz(_datetime.datetime):
         """
         assert dt.tzinfo is not None and dt.tzinfo.utcoffset(dt) is not None
 
+    def astimezone(self, tz: ZoneInfo) -> datetime_tz:
+        """
+        Return a datetime_tz object with the same datetime data but in the specified timezone.
+        """
+        return datetime_tz.fromtimestamp(self.timestamp(), tz=tz)
+
     def __deepcopy__(self: DateTimeTzT, memodict: object) -> DateTimeTzT:
         """
         Deepcopy does not natively work with the __init__ we add to this class
@@ -276,6 +282,25 @@ class datetime_tz(_datetime.datetime):
             microsecond=self.microsecond,
             tzinfo=self.tzinfo,  # type: ignore[arg-type]
             fold=self.fold,
+        )
+
+    def __reduce__(self) -> tuple[type, tuple[Any, ...], dict[str, Any]]:
+        """
+        Support for pickling datetime_tz objects.
+        """
+        return (
+            self.__class__,
+            (
+                self.year,
+                self.month,
+                self.day,
+                self.hour,
+                self.minute,
+                self.second,
+                self.microsecond,
+                self.tzinfo,
+            ),
+            {"fold": self.fold},
         )
 
 
