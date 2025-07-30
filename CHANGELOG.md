@@ -1,3 +1,16 @@
+1.3.2
+-----
+
+Released 2025-07-30.
+
+**Breaking changes**:
+
+- None
+
+Release highlights:
+
+- Replace Ruff with Black and reformat codebase
+
 1.3.1
 -----
 
