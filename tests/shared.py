@@ -15,4 +15,4 @@ class datetime_cet(datetime_tz):
     A `datetime_cet` is a `datetime_tz` but which is guaranteed to be in the 'CET' timezone.
     """
 
-    assumed_timezone_for_timezone_naive_input = ZoneInfo('CET')
+    assumed_timezone_for_timezone_naive_input = ZoneInfo("CET")

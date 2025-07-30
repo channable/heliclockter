@@ -10,8 +10,8 @@ from heliclockter import datetime_tz, timedelta, tz_local
 @parameterized.expand(
     [
         (datetime.datetime(2021, 1, 1, 10, tzinfo=tz_local),),
-        (datetime.datetime(2021, 1, 1, 10, tzinfo=ZoneInfo('CET')),),
-        (datetime.datetime(2021, 1, 1, 10, tzinfo=ZoneInfo('UTC')),),
+        (datetime.datetime(2021, 1, 1, 10, tzinfo=ZoneInfo("CET")),),
+        (datetime.datetime(2021, 1, 1, 10, tzinfo=ZoneInfo("UTC")),),
         (
             datetime.datetime(
                 2021, 1, 1, 10, tzinfo=datetime.timezone(datetime.timedelta(hours=-8))
