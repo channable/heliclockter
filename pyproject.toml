@@ -43,7 +43,6 @@ line-length = 100
 output-format = "full"
 respect-gitignore = false
 show-fixes = true
-target-version = "py313"
 exclude = ["venv"]
 
 [tool.ruff.lint]
@@ -61,9 +60,6 @@ select = [
   "W", # Enable all Pycodestyle warning-level messages.
   "T20", # Disallow `print` statements.
   "TID251", # Disallow banned imports, using flake8-tidy-imports.banned-api.
-]
-ignore = [
-    "UP007", # Needs a breaking change to drop Python 3.9 support
 ]
 
 [tool.ruff.lint.isort]

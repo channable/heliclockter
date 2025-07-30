@@ -1,7 +1,7 @@
 1.3.2
 -----
 
-Released 2025-07-30.
+Released 2025-08-01.
 
 **Breaking changes**:
 
