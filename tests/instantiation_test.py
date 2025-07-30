@@ -1,6 +1,6 @@
 from copy import deepcopy
 from datetime import datetime, timezone, tzinfo
-from typing import Optional, Type, Union
+from typing import Union
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -15,10 +15,9 @@ from heliclockter import (
     timedelta,
     tz_local,
 )
-
 from tests.shared import datetime_cet
 
-DatetimeT = Union[Type[datetime_tz], Type[datetime_cet], Type[datetime_utc]]
+DatetimeT = Union[type[datetime_tz], type[datetime_cet], type[datetime_utc]]
 
 
 @parameterized.expand(
@@ -50,7 +49,7 @@ DatetimeT = Union[Type[datetime_tz], Type[datetime_cet], Type[datetime_utc]]
     ]
 )
 def test_from_datetime(
-    input_tz: Optional[tzinfo],
+    input_tz: Union[tzinfo, None],
     expected_dt_class: DatetimeT,
     expected_hour: int,
 ) -> None:
@@ -209,7 +208,7 @@ def test_deepcopy_datetime_tz() -> None:
     ]
 )
 def test_strptime(
-    dt_string: str, fmt: str, dt_class: Type[DateTimeTzT], expected_dt: DateTimeTzT
+    dt_string: str, fmt: str, dt_class: type[DateTimeTzT], expected_dt: DateTimeTzT
 ) -> None:
     assert dt_class.strptime(dt_string, fmt) == expected_dt
 
@@ -251,7 +250,7 @@ def test_fromtimestamp(timestamp: float, expected_dt: datetime_utc) -> None:
     ]
 )
 def test_future_and_past(
-    dt_class: Type[DateTimeTzT], days: int = 0, weeks: int = 0, tz: Optional[ZoneInfo] = None
+    dt_class: type[DateTimeTzT], days: int = 0, weeks: int = 0, tz: Union[ZoneInfo, None] = None
 ) -> None:
     delta = timedelta(days=days, weeks=weeks)
     dt_past = dt_class.past(days=days, weeks=weeks, tz=tz)

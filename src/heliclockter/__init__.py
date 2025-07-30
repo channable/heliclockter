@@ -4,16 +4,15 @@ import datetime as _datetime
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     ClassVar,
-    Iterator,
-    Optional,
-    Type,
     TypeVar,
     Union,
     cast,
 )
 from zoneinfo import ZoneInfo
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterator
 
 # We don't require pydantic as a dependency, but add validate logic if it exists.
 # `parse_datetime` doesn't exist in Pydantic v2, so `PYDANTIC_V1_AVAILABLE is False` when
@@ -26,10 +25,12 @@ except ImportError:
     PYDANTIC_V1_AVAILABLE = False
 
 try:
-    from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
-    from pydantic_core import CoreSchema, core_schema
-    from pydantic.json_schema import JsonSchemaValue
     from pydantic.v1.datetime_parse import parse_datetime
+    from pydantic_core import CoreSchema, core_schema
+
+    if TYPE_CHECKING:
+        from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
+        from pydantic.json_schema import JsonSchemaValue
 
     PYDANTIC_V2_AVAILABLE = True
 except ImportError:
@@ -42,12 +43,12 @@ date = _datetime.date
 timedelta = _datetime.timedelta
 
 
-tz_local = cast(ZoneInfo, _datetime.datetime.now().astimezone().tzinfo)
+tz_local = cast("ZoneInfo", _datetime.datetime.now().astimezone().tzinfo)
 
-__version__ = '1.3.1'
+__version__ = "1.3.1"
 
 
-DateTimeTzT = TypeVar('DateTimeTzT', bound='datetime_tz')
+DateTimeTzT = TypeVar("DateTimeTzT", bound="datetime_tz")
 IntFloat = Union[int, float]
 
 
@@ -62,7 +63,7 @@ class datetime_tz(_datetime.datetime):
     A `datetime_tz` is just a `datetime.datetime` but which is guaranteed to be timezone aware.
     """
 
-    assumed_timezone_for_timezone_naive_input: ClassVar[Optional[ZoneInfo]] = None
+    assumed_timezone_for_timezone_naive_input: ClassVar[ZoneInfo | None] = None
 
     if TYPE_CHECKING:
 
@@ -95,11 +96,11 @@ class datetime_tz(_datetime.datetime):
             tzinfo: _datetime.tzinfo = None,
             fold: int = 0,
         ) -> None:
-            msg = f'{self.__class__} must have a timezone'
+            msg = f"{self.__class__} must have a timezone"
             assert tzinfo is not None and self.tzinfo is not None, msg
             tz_expected = self.assumed_timezone_for_timezone_naive_input or tzinfo
 
-            msg = f'{self.__class__} got invalid timezone {self.tzinfo!r}, expected {tz_expected!r}'
+            msg = f"{self.__class__} got invalid timezone {self.tzinfo!r}, expected {tz_expected!r}"
             assert self.tzinfo == tz_expected, msg
 
             self.assert_aware_datetime(self)
@@ -107,11 +108,11 @@ class datetime_tz(_datetime.datetime):
     if PYDANTIC_V1_AVAILABLE or PYDANTIC_V2_AVAILABLE:
 
         @classmethod
-        def __get_validators__(cls) -> Iterator[Callable[[Any], Optional[datetime_tz]]]:
+        def __get_validators__(cls) -> Iterator[Callable[[Any], datetime_tz | None]]:
             yield cls._validate
 
         @classmethod
-        def _validate(cls: Type[DateTimeTzT], v: Any) -> Optional[DateTimeTzT]:
+        def _validate(cls: type[DateTimeTzT], v: Any) -> DateTimeTzT | None:
             if v is None:
                 return None
 
@@ -146,10 +147,10 @@ class datetime_tz(_datetime.datetime):
             return handler(core_schema.datetime_schema())
 
     @classmethod
-    def from_datetime(cls: Type[DateTimeTzT], dt: _datetime.datetime) -> DateTimeTzT:
+    def from_datetime(cls: type[DateTimeTzT], dt: _datetime.datetime) -> DateTimeTzT:
         # Case datetime is naive and there is no assumed timezone.
         if dt.tzinfo is None and cls.assumed_timezone_for_timezone_naive_input is None:
-            raise DatetimeTzError('Cannot create aware datetime from naive if no tz is assumed')
+            raise DatetimeTzError("Cannot create aware datetime from naive if no tz is assumed")
 
         # Case: datetime is naive, but the timezone is assumed.
         if dt.tzinfo is None:
@@ -159,7 +160,7 @@ class datetime_tz(_datetime.datetime):
         elif (assumed_tz := cls.assumed_timezone_for_timezone_naive_input) is not None:
             # Case: when `assumed_timezone_for_timezone_naive_input` is declared on the input
             # dt it cannot be instantiated in a different timezone.
-            if getattr(dt, 'assumed_timezone_for_timezone_naive_input', None) is not None:
+            if getattr(dt, "assumed_timezone_for_timezone_naive_input", None) is not None:
                 dt = _datetime.datetime(
                     year=dt.year,
                     month=dt.month,
@@ -189,18 +190,18 @@ class datetime_tz(_datetime.datetime):
         )
 
     @classmethod
-    def now(cls: Type[DateTimeTzT], tz: Optional[_datetime.tzinfo] = None) -> DateTimeTzT:
+    def now(cls: type[DateTimeTzT], tz: _datetime.tzinfo | None = None) -> DateTimeTzT:
         tz = cls.assumed_timezone_for_timezone_naive_input or tz
         if tz is None:
             raise DatetimeTzError(
-                'Must override assumed_timezone_for_timezone_naive_input '
-                'or give a timezone when calling now'
+                "Must override assumed_timezone_for_timezone_naive_input "
+                "or give a timezone when calling now"
             )
         return cls.from_datetime(_datetime.datetime.now(tz))
 
     @classmethod
     def future(
-        cls: Type[DateTimeTzT],
+        cls: type[DateTimeTzT],
         weeks: IntFloat = 0,
         days: IntFloat = 0,
         hours: IntFloat = 0,
@@ -208,7 +209,7 @@ class datetime_tz(_datetime.datetime):
         seconds: IntFloat = 0,
         milliseconds: IntFloat = 0,
         microseconds: IntFloat = 0,
-        tz: Optional[ZoneInfo] = None,
+        tz: ZoneInfo | None = None,
     ) -> DateTimeTzT:
         delta = timedelta(
             weeks=weeks,
@@ -223,7 +224,7 @@ class datetime_tz(_datetime.datetime):
 
     @classmethod
     def past(
-        cls: Type[DateTimeTzT],
+        cls: type[DateTimeTzT],
         weeks: IntFloat = 0,
         days: IntFloat = 0,
         hours: IntFloat = 0,
@@ -231,7 +232,7 @@ class datetime_tz(_datetime.datetime):
         seconds: IntFloat = 0,
         milliseconds: IntFloat = 0,
         microseconds: IntFloat = 0,
-        tz: Optional[ZoneInfo] = None,
+        tz: ZoneInfo | None = None,
     ) -> DateTimeTzT:
         delta = timedelta(
             weeks=weeks,
@@ -245,11 +246,11 @@ class datetime_tz(_datetime.datetime):
         return cls.now(tz=tz) - delta
 
     @classmethod
-    def fromisoformat(cls: Type[DateTimeTzT], date_string: str) -> DateTimeTzT:
+    def fromisoformat(cls: type[DateTimeTzT], date_string: str) -> DateTimeTzT:
         return cls.from_datetime(_datetime.datetime.fromisoformat(date_string))
 
     @classmethod
-    def strptime(cls: Type[DateTimeTzT], date_string: str, __format: str) -> DateTimeTzT:
+    def strptime(cls: type[DateTimeTzT], date_string: str, __format: str) -> DateTimeTzT:
         dt = _datetime.datetime.strptime(date_string, __format)
         return cls.from_datetime(dt)
 
@@ -284,14 +285,14 @@ class datetime_utc(datetime_tz):
     A `datetime_utc` is a `datetime_tz` but which is guaranteed to be in the UTC+0 timezone.
     """
 
-    assumed_timezone_for_timezone_naive_input = ZoneInfo('UTC')
+    assumed_timezone_for_timezone_naive_input = ZoneInfo("UTC")
 
     @classmethod
     def fromtimestamp(cls, timestamp: float) -> datetime_utc:  # type: ignore[override]  # pylint: disable=arguments-differ
         """
         Parses a timestamp to a timezone aware datetime.
         """
-        return cls.from_datetime(_datetime.datetime.fromtimestamp(timestamp, tz=ZoneInfo('UTC')))
+        return cls.from_datetime(_datetime.datetime.fromtimestamp(timestamp, tz=ZoneInfo("UTC")))
 
 
 class datetime_local(datetime_tz):
