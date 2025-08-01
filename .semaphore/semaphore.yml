@@ -55,8 +55,7 @@ blocks:
 
         - name: "Style"
           commands:
-            - "python3.10 -m black --check ."
-            - "python3.10 -m isort --check datetime_tz tests"
+            - "python3.10 -m ruff check ."
 
         - name: "Security"
           commands:

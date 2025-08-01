@@ -36,24 +36,35 @@ version = {attr = 'heliclockter.__version__'}
 heliclockter = ['py.typed']
 
 [project.optional-dependencies]
-all = ['bandit', 'black', 'mypy', 'pydantic', 'pylint', 'pytest', 'parameterized', 'toml']
+all = ['bandit', 'ruff', 'mypy', 'pydantic', 'pylint', 'pytest', 'parameterized', 'toml']
 
-[tool.black]
-target-version = ['py39']
+[tool.ruff]
 line-length = 100
-skip-string-normalization = true
-exclude = '(^\..+|local_cache|venv)'
-workers = 4
+output-format = "full"
+respect-gitignore = false
+show-fixes = true
+exclude = ["venv"]
 
-[tool.isort]
-profile = 'black'
-multi_line_output = 3
-line_length = 100
-atomic = true
-skip_gitignore = true
-case_sensitive = true
-known_heliclockter = 'heliclockter'
-sections = 'FUTURE,STDLIB,THIRDPARTY,HELICLOCKTER,FIRSTPARTY,LOCALFOLDER'
+[tool.ruff.lint]
+select = [
+  "E", # Enable all Pycodestyle error-level messages
+  "F", # Enable all Pyflakes messages
+  "I", # Enable all Isort messages
+  "PGH", # Enable https://github.com/pre-commit/pygrep-hooks, amongst others eval-used
+  "PIE", # Enable https://pypi.org/project/flake8-pie/, amongst others duplicate Enum values
+  "PLE", # Enable all Pylint error-level messages
+  "PLW", # Enable all Pylint warning-level messages
+  "RUF100", # Report unused noqa comments
+  "TCH", # Enable https://pypi.org/project/flake8-type-checking/
+  "UP", # Enable all pyupgrade messages
+  "W", # Enable all Pycodestyle warning-level messages.
+  "T20", # Disallow `print` statements.
+  "TID251", # Disallow banned imports, using flake8-tidy-imports.banned-api.
+]
+
+[tool.ruff.lint.isort]
+case-sensitive = true
+combine-as-imports = true
 
 [tool.pytest.ini_options]
 addopts = [
