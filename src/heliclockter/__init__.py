@@ -1,14 +1,7 @@
 from __future__ import annotations
 
 import datetime as _datetime
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    ClassVar,
-    TypeVar,
-    Union,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, cast
 from zoneinfo import ZoneInfo
 
 if TYPE_CHECKING:
@@ -49,7 +42,7 @@ __version__ = "1.3.2"
 
 
 DateTimeTzT = TypeVar("DateTimeTzT", bound="datetime_tz")
-IntFloat = Union[int, float]
+IntFloat = int | float
 
 
 class DatetimeTzError(ValueError):

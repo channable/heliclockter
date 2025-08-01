@@ -6,7 +6,7 @@ build-backend = 'setuptools.build_meta'
 name = 'heliclockter'
 description = 'A robust way of dealing with datetimes in python by ensuring all datetimes are timezone aware at runtime.'
 readme = 'README.md'
-requires-python = '>=3.9'
+requires-python = '>=3.10'
 keywords = ['datetime', 'heliclockter', 'timezone', 'timezones', 'tz', 'tzinfo']
 license = {file = 'LICENSE'}
 classifiers = [
@@ -15,7 +15,6 @@ classifiers = [
     'Natural Language :: English',
     'Operating System :: Unix',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',

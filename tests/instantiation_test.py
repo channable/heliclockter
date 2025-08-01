@@ -1,6 +1,5 @@
 from copy import deepcopy
 from datetime import datetime, timezone, tzinfo
-from typing import Union
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -17,7 +16,7 @@ from heliclockter import (
 )
 from tests.shared import datetime_cet
 
-DatetimeT = Union[type[datetime_tz], type[datetime_cet], type[datetime_utc]]
+DatetimeT = type[datetime_tz] | type[datetime_cet] | type[datetime_utc]
 
 
 @parameterized.expand(
@@ -49,7 +48,7 @@ DatetimeT = Union[type[datetime_tz], type[datetime_cet], type[datetime_utc]]
     ]
 )
 def test_from_datetime(
-    input_tz: Union[tzinfo, None],
+    input_tz: tzinfo | None,
     expected_dt_class: DatetimeT,
     expected_hour: int,
 ) -> None:
@@ -250,7 +249,7 @@ def test_fromtimestamp(timestamp: float, expected_dt: datetime_utc) -> None:
     ]
 )
 def test_future_and_past(
-    dt_class: type[DateTimeTzT], days: int = 0, weeks: int = 0, tz: Union[ZoneInfo, None] = None
+    dt_class: type[DateTimeTzT], days: int = 0, weeks: int = 0, tz: ZoneInfo | None = None
 ) -> None:
     delta = timedelta(days=days, weeks=weeks)
     dt_past = dt_class.past(days=days, weeks=weeks, tz=tz)

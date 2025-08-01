@@ -1,3 +1,16 @@
+2.0.0
+-----
+
+Released 2025-08-01.
+
+**Breaking changes**:
+
+- Dropped support for Python 3.9
+
+Release highlights:
+
+- Dropped support for Python 3.9 to allow more modern Python syntax
+
 1.3.2
 -----
 

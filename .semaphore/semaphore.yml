@@ -19,11 +19,6 @@ blocks:
           - "python3.10 -m pip install -e .[all]"
 
       jobs:
-        - name: "Unit tests 3.9"
-          commands:
-            # Semaphore does not have python3.11, so we run the tests using a Dockerfile
-            - "sudo docker build --build-arg PYTHON_VERSION=3.9.13 -t py309 . && sudo docker run py309"
-
         - name: "Unit tests 3.10"
           commands:
             - "export PUBLISH_JUNIT_REPORT=true" # Export junit report from this job

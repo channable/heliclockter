@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-from typing import Union
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -31,7 +30,7 @@ class DatetimeDefaultObject(BaseModel):
     dt: str = datetime_utc.future(days=120).isoformat()
 
 
-TestModelT = Union[DatetimeTZModel, DatetimeUTCModel, DatetimeCETModel]
+TestModelT = DatetimeTZModel | DatetimeUTCModel | DatetimeCETModel
 
 
 @parameterized.expand(
