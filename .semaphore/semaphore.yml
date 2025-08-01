@@ -43,6 +43,11 @@ blocks:
             # Semaphore does not have python3.13, so we run the tests using a Dockerfile
             - "sudo docker build --build-arg PYTHON_VERSION=3.13.0 -t py313 . && sudo docker run py313"
 
+        - name: "Unit tests 3.14"
+          commands:
+            # Semaphore does not have python3.14, so we run the tests using a Dockerfile
+            - "sudo docker build --build-arg PYTHON_VERSION=3.14.0-rc-bookworm -t py314 . && sudo docker run py314"
+
         - name: "Typing"
           commands:
             - "export PUBLISH_JUNIT_REPORT=true" # Export junit report from this job

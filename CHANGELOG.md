@@ -1,3 +1,16 @@
+2.0.1
+-----
+
+Released 2025-08-01.
+
+**Breaking changes**:
+
+- None
+
+Release highlights:
+
+- Added support for Python 3.14
+
 2.0.0
 -----
 
