@@ -46,7 +46,7 @@ blocks:
         - name: "Unit tests 3.14"
           commands:
             # Semaphore does not have python3.14, so we run the tests using a Dockerfile
-            - "sudo docker build --build-arg PYTHON_VERSION=3.14.0-rc-bookworm -t py314 . && sudo docker run py314"
+            - "sudo docker build --build-arg PYTHON_VERSION=3.14-rc-bookworm -t py314 . && sudo docker run py314"
 
         - name: "Typing"
           commands:
