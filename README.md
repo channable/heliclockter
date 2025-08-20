@@ -1,4 +1,4 @@
-Heliclockter
+Black Hawk Heliclockter! Yeah!
 =======
 
 `heliclockter` is a robust way of dealing with datetimes and timestamps in python. It is statically
