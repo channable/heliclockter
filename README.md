@@ -27,7 +27,8 @@ utc_now = datetime_utc.now()
 local_now = datetime_local.now()
 
 # Any timezone datetime
-paris_tz = datetime_tz.now("Europe/Paris")
+from zoneinfo import ZoneInfo
+paris_tz = datetime_tz.now(tz=ZoneInfo("Europe/Paris"))
 
 # Create a timestamp 2 hours in the future
 future = datetime_utc.future(hours=2)
@@ -51,24 +52,29 @@ Python's standard `datetime` allows "naive" datetimes without timezone info, lea
 - **Type safe** - Full typing support for better IDE experience  
 - **Zero dependencies** - Lightweight, uses only standard library
 - **Pydantic support** - Automatic integration when Pydantic is installed
-- **Python 3.9+** - Modern Python for modern applications
+- **Python 3.10+** - Modern Python for modern applications
 
 ## Examples
 
 ### Timezone conversions
 
 ```python
-from heliclockter import datetime_utc
+from heliclockter import datetime_utc, datetime_tz
 from zoneinfo import ZoneInfo
 
 # Start with UTC
 utc_time = datetime_utc.now()
 
-# Convert to Tokyo time
-tokyo_time = utc_time.astimezone(ZoneInfo('Asia/Tokyo'))
+# To convert to different timezones, create custom classes
+class datetime_tokyo(datetime_tz):
+    assumed_timezone_for_timezone_naive_input = ZoneInfo('Asia/Tokyo')
 
-# Convert to New York time
-ny_time = utc_time.astimezone(ZoneInfo('America/New_York'))
+class datetime_ny(datetime_tz):
+    assumed_timezone_for_timezone_naive_input = ZoneInfo('America/New_York')
+
+# Convert using from_datetime
+tokyo_time = datetime_tokyo.from_datetime(utc_time)
+ny_time = datetime_ny.from_datetime(utc_time)
 ```
 
 ### Handling naive datetimes
@@ -133,7 +139,6 @@ schedule_task(local_time)  # ✗ Type error
 - `from_datetime()` - Convert from standard datetime
 - `strptime()` - Parse string to datetime
 - `future()/past()` - Create relative timestamps
-- `astimezone()` - Convert between timezones
 
 ## About the Name
 
