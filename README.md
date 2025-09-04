@@ -139,6 +139,7 @@ schedule_task(local_time)  # ✗ Type error
 - `from_datetime()` - Convert from standard datetime
 - `strptime()` - Parse string to datetime
 - `future()/past()` - Create relative timestamps
+- `astimezone()` - Convert to other timezone   
 
 ## About the Name
 

@@ -38,7 +38,7 @@ timedelta = _datetime.timedelta
 
 tz_local = cast("ZoneInfo", _datetime.datetime.now().astimezone().tzinfo)
 
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 
 
 DateTimeTzT = TypeVar("DateTimeTzT", bound="datetime_tz")
@@ -254,6 +254,17 @@ class datetime_tz(_datetime.datetime):
         an AssertionError otherwise.
         """
         assert dt.tzinfo is not None and dt.tzinfo.utcoffset(dt) is not None
+
+    def astimezone(self, tz: _datetime.tzinfo | None = None) -> datetime_tz:
+        """
+        Return a datetime_tz object with the same datetime data but in the specified timezone.
+        Uses local timezone if no timezone is provided.
+        """
+        if tz is None:
+            tz = tz_local
+        if tz is self.tzinfo:
+            return self
+        return datetime_tz.fromtimestamp(self.timestamp(), tz=tz)
 
     def __deepcopy__(self: DateTimeTzT, memodict: object) -> DateTimeTzT:
         """
