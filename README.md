@@ -1,110 +1,153 @@
-Heliclockter
-=======
+# Heliclockter
 
-`heliclockter` is a robust way of dealing with datetimes and timestamps in python. It is statically
-type checkable as well as runtime enforceable and integrates with [pydantic][pydantic].
+[![PyPI](https://img.shields.io/pypi/v/heliclockter)](https://pypi.org/project/heliclockter/)
+[![License](https://img.shields.io/github/license/channable/heliclockter)](https://github.com/channable/heliclockter/blob/master/LICENSE)
+[![Python Versions](https://img.shields.io/pypi/pyversions/heliclockter)](https://pypi.org/project/heliclockter/)
 
-The library exposes 3 classes:
+**Timezone-aware datetimes for Python that just work.**
 
-- `datetime_tz`, a datetime ensured to be timezone-aware.
-- `datetime_local`, a datetime ensured to be timezone-aware in the local timezone.
-- `datetime_utc`, a datetime ensured to be timezone-aware in the UTC+0 timezone.
+`heliclockter` is a timezone-aware datetime library that ensures your timestamps are always timezone-aware. It's statically type checkable and runtime enforceable.
 
-as well as various utilities to instantiate, mutate and serialize those classes.
+## Installation
 
-See our [announcement post][announcement] for a more background on why we wrote `heliclockter`.
+```bash
+pip install heliclockter
+```
 
-[pydantic]: https://github.com/pydantic/pydantic
-[announcement]: https://www.channable.com/tech/heliclockter-timezone-aware-datetimes-in-python
-
-Examples
--------
-
-Say you want to create a timestamp of the current time in the UTC+0 timezone.
+## Quick Start
 
 ```python
-from heliclockter import datetime_utc
+from heliclockter import datetime_utc, datetime_local, datetime_tz
 
-now = datetime_utc.now()
+# UTC datetime
+utc_now = datetime_utc.now()
 # datetime_utc(2022, 11, 4, 15, 28, 10, 478176, tzinfo=zoneinfo.ZoneInfo(key='UTC'))
+
+# Local timezone datetime  
+local_now = datetime_local.now()
+
+# Any timezone datetime
+from zoneinfo import ZoneInfo
+paris_tz = datetime_tz.now(tz=ZoneInfo("Europe/Paris"))
+
+# Create a timestamp 2 hours in the future
+future = datetime_utc.future(hours=2)
+
+# Parse strings (naive timestamps assumed UTC)
+parsed = datetime_utc.strptime('2022-11-04T15:49:29', '%Y-%m-%dT%H:%M:%S')
 ```
 
-Or imagine you want to create a timestamp 2 hours in the future from now:
+## Why heliclockter?
+
+Python's standard `datetime` allows "naive" datetimes without timezone info, leading to bugs when:
+- Mixing naive and aware datetimes (causes runtime TypeErrors)
+- Deploying across different timezones
+- Forgetting to add `tzinfo` when creating datetimes
+
+`heliclockter` enforces timezone-aware datetimes at the type level, catching these issues before production.
+
+## Key Features
+
+- **Always timezone-aware** - No more naive datetime accidents
+- **Type safe** - Full typing support for better IDE experience  
+- **Zero dependencies** - Lightweight, uses only standard library
+- **Pydantic support** - Automatic integration when Pydantic is installed
+- **Python 3.10+** - Modern Python for modern applications
+
+## Examples
+
+### Timezone conversions
 
 ```python
-from heliclockter import datetime_utc
+from heliclockter import datetime_utc, datetime_tz
+from zoneinfo import ZoneInfo
 
-two_hours_from_now = datetime_utc.future(hours=2)
-# datetime_utc(2022, 11, 4, 17, 28, 52, 478176, tzinfo=zoneinfo.ZoneInfo(key='UTC'))
+# Start with UTC
+utc_time = datetime_utc.now()
+
+# To convert to different timezones, create custom classes
+class datetime_tokyo(datetime_tz):
+    assumed_timezone_for_timezone_naive_input = ZoneInfo('Asia/Tokyo')
+
+class datetime_ny(datetime_tz):
+    assumed_timezone_for_timezone_naive_input = ZoneInfo('America/New_York')
+
+# Convert using from_datetime
+tokyo_time = datetime_tokyo.from_datetime(utc_time)
+ny_time = datetime_ny.from_datetime(utc_time)
 ```
 
-Features
---------
-
-* Runtime enforcable timezone-aware datetimes
-* Utilities for instantiating, mutating and serializing timezone-aware datetimes
-* Statically type check-ble
-* Pydantic integration
-* Extensive test suite
-* No third party dependencies
-
-Installation
-------------
-
-To install `heliclockter`, simply: 
-
-    $ pip install heliclockter
-
-More examples
--------------
-
-Imagine you want to parse a JSON response from a third party API which includes a timestamp, and you
-want to handle the timestamp in the UTC+0 timezone regardless of how the 3rd party relays it. This 
-can easily be done with `pydantic` and `heliclockter`:
+### Handling naive datetimes
 
 ```python
-import requests
-from pydantic import BaseModel
-from heliclockter import datetime_utc
+from heliclockter import datetime_utc, datetime_tz
+from datetime import datetime
 
+# datetime_utc assumes UTC for naive inputs
+naive_dt = datetime(2022, 11, 4, 15, 30, 0)
+utc_dt = datetime_utc.from_datetime(naive_dt)  # OK - assumes UTC
 
-class ApiResponse(BaseModel):
-    current_time: datetime_utc
-
-
-def get_response() -> ApiResponse:
-    response = requests.get('https://some-api.com/time')
-    return ApiResponse.parse_obj(response.json())
+# datetime_tz requires explicit timezone
+try:
+    tz_dt = datetime_tz.from_datetime(naive_dt)  # Raises error
+except Exception as e:
+    print(e)  # "Cannot create aware datetime from naive if no tz is assumed"
 ```
 
-The returned `ApiResponse` instance is guaranteed to have parsed the `current_time` attribute 
-as UTC+0 no matter how the api provided the timestamp. If no timezone information is provided, 
-it will be assumed to be UTC+0.
-
-Expanding the module can be done with little effort, by creating a new class that inherits `datetime_tz`:
+### Custom timezone classes
 
 ```python
 from zoneinfo import ZoneInfo
 from heliclockter import datetime_tz
 
-
 class datetime_cet(datetime_tz):
-    """
-    A `datetime_cet` is a `datetime_tz` but which is guaranteed to be in the 'CET' timezone.
-    """
-
+    """Datetime guaranteed to be in CET timezone."""
     assumed_timezone_for_timezone_naive_input = ZoneInfo('CET')
+
+# Parse naive timestamps as CET
+aware_dt = datetime_cet.strptime('2022-11-04T15:49:29', '%Y-%m-%dT%H:%M:%S')
 ```
 
-If you have a timestamp which is naive, *but* the timezone in which it is made is known to you,
-you can easily create a `datetime_tz` instance using your own defined classes:
+### Type safety with mypy
 
 ```python
-aware_dt = datetime_cet.strptime('2022-11-04T15:49:29', '%Y-%m-%dT%H:%M:%S')
-# datetime_cet(2022, 11, 4, 15, 49, 29, tzinfo=zoneinfo.ZoneInfo(key='CET'))
+from heliclockter import datetime_utc, datetime_local
+
+def schedule_task(when: datetime_utc) -> None:
+    """Schedule a task at a specific UTC time."""
+    print(f"Task scheduled for {when.isoformat()}")
+
+# Type checker ensures only UTC datetimes are passed
+utc_time = datetime_utc.now()
+schedule_task(utc_time)  # ✓ OK
+
+local_time = datetime_local.now()  
+schedule_task(local_time)  # ✗ Type error
 ```
 
-About the name
---------------
+## API Overview
 
-`heliclockter` is a word play of "clock" and "helicopter". The module aims to guide the user and help them make little to no mistakes when handling datetimes, just like a [helicopter parent](https://en.wikipedia.org/wiki/Helicopter_parent) strictly supervises their children.
+### Core Classes
+
+- **`datetime_tz`** - Base class for timezone-aware datetimes
+- **`datetime_utc`** - Always UTC (naive inputs assumed UTC)
+- **`datetime_local`** - Always local timezone (naive inputs assumed local)
+
+### Key Methods
+
+- `now()` - Current time
+- `from_datetime()` - Convert from standard datetime
+- `strptime()` - Parse string to datetime
+- `future()/past()` - Create relative timestamps
+
+## About the Name
+
+`heliclockter` is a portmanteau of "clock" and "helicopter". Like a [helicopter parent](https://en.wikipedia.org/wiki/Helicopter_parent), it strictly supervises your datetime handling, ensuring you never make timezone mistakes.
+
+## Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](https://github.com/channable/heliclockter/blob/master/CONTRIBUTING.md).
+
+## License
+
+BSD 3-Clause License. See [LICENSE](https://github.com/channable/heliclockter/blob/master/LICENSE).
