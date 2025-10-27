@@ -1,3 +1,17 @@
+3.0.0
+-----
+Released 2025-10-31
+
+**Breaking changes**:
+
+- Drops support for Pydantic v1. Please migrate your code to Pydantic v2.
+  See the Pydantic migration guide https://docs.pydantic.dev/2.12/migration/ for details.
+  Note that using heliclockter in combination with the `pydantic.v1` module in Pydantic v2 is also no longer supported.
+
+Release highlights:
+
+- Adds support for python 3.14 and drops support for Pydantic v1.
+
 2.1.0
 -----
 Released 2025-09-04

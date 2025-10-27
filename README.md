@@ -149,6 +149,19 @@ schedule_task(local_time)  # ✗ Type error
 
 We welcome contributions! See [CONTRIBUTING.md](https://github.com/channable/heliclockter/blob/master/CONTRIBUTING.md).
 
+## Python and Pydantic compatibility
+
+The table below shows which Pydantic and Python versions are supported for which heliclockter version.
+Note that the latest version of heliclockter dropped support for Pydantic v1 code completely, meaning that you
+also can't use heliclockter in combination with the `pydantic.v1` module in Pydantic v2.
+
+| heliclockter version | Pydantic support | Python support               |
+|----------------------|------------------|------------------------------|
+| 1.0                  | v1               | 3.9, 3.10, 3.11, 3.12, 3.13  |
+| 1.1, 1.2, 1.3        | v1, v2           | 3.9, 3.10, 3.11, 3.12, 3.13  |
+| 2.0                  | v1, v2           | 3.10, 3.11, 3.12, 3.13       |
+| 3.0                  | v2               | 3.10, 3.11, 3.12, 3.13, 3.14 |
+
 ## License
 
 BSD 3-Clause License. See [LICENSE](https://github.com/channable/heliclockter/blob/master/LICENSE).

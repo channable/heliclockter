@@ -1,34 +1,9 @@
+# pylint: disable=import-outside-toplevel
 from __future__ import annotations
 
 import datetime as _datetime
 from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, cast
 from zoneinfo import ZoneInfo
-
-if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator
-
-# We don't require pydantic as a dependency, but add validate logic if it exists.
-# `parse_datetime` doesn't exist in Pydantic v2, so `PYDANTIC_V1_AVAILABLE is False` when
-# pydantic v2 is installed.
-try:
-    from pydantic.datetime_parse import parse_datetime
-
-    PYDANTIC_V1_AVAILABLE = True
-except ImportError:
-    PYDANTIC_V1_AVAILABLE = False
-
-try:
-    from pydantic.v1.datetime_parse import parse_datetime
-    from pydantic_core import CoreSchema, core_schema
-
-    if TYPE_CHECKING:
-        from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
-        from pydantic.json_schema import JsonSchemaValue
-
-    PYDANTIC_V2_AVAILABLE = True
-except ImportError:
-    PYDANTIC_V2_AVAILABLE = False
-
 
 # `date` and `timedelta` are exposed for your convenience in case this module is used in combination
 # with an import linter that prohibits importing the `datetime` package anywhere.
@@ -38,7 +13,7 @@ timedelta = _datetime.timedelta
 
 tz_local = cast("ZoneInfo", _datetime.datetime.now().astimezone().tzinfo)
 
-__version__ = "2.1.0"
+__version__ = "3.0.0"
 
 
 DateTimeTzT = TypeVar("DateTimeTzT", bound="datetime_tz")
@@ -98,24 +73,22 @@ class datetime_tz(_datetime.datetime):
 
             self.assert_aware_datetime(self)
 
-    if PYDANTIC_V1_AVAILABLE or PYDANTIC_V2_AVAILABLE:
+    # We don't require pydantic as a dependency, but add validate logic if it exists.
+    try:
+        import pydantic
 
-        @classmethod
-        def __get_validators__(cls) -> Iterator[Callable[[Any], datetime_tz | None]]:
-            yield cls._validate
+        if pydantic.__version__[0] != "2":
+            raise RuntimeError("Unexpected Pydantic version, expected 2.x")
 
-        @classmethod
-        def _validate(cls: type[DateTimeTzT], v: Any) -> DateTimeTzT | None:
-            if v is None:
-                return None
-
-            dt = v if isinstance(v, _datetime.datetime) else parse_datetime(v)
-            return cls.from_datetime(dt)
-
-    if PYDANTIC_V2_AVAILABLE:
+        if TYPE_CHECKING:
+            from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
+            from pydantic.json_schema import JsonSchemaValue
+            from pydantic_core import CoreSchema
 
         @classmethod
         def __get_pydantic_core_schema__(cls, _: Any, __: GetCoreSchemaHandler) -> CoreSchema:
+            from pydantic_core import core_schema
+
             from_datetime_schema = core_schema.chain_schema(
                 [
                     core_schema.datetime_schema(),
@@ -135,9 +108,14 @@ class datetime_tz(_datetime.datetime):
 
         @classmethod
         def __get_pydantic_json_schema__(
-            cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
+            cls, _core_schema: CoreSchema, handler: GetJsonSchemaHandler
         ) -> JsonSchemaValue:
+            from pydantic_core import core_schema
+
             return handler(core_schema.datetime_schema())
+
+    except ImportError:
+        pass
 
     @classmethod
     def from_datetime(cls: type[DateTimeTzT], dt: _datetime.datetime) -> DateTimeTzT:
