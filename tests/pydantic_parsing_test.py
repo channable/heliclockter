@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
@@ -126,3 +127,15 @@ def test_parse_datetime_instance() -> None:
 
     parsed_utc_model = DatetimeUTCModel(dt=dt)  # type: ignore[arg-type]
     assert isinstance(parsed_utc_model.dt, datetime_utc)
+
+
+@pytest.mark.skipif(sys.version_info >= (3, 14), reason="requires python3.13.* or lower")
+def test_pydantic_v1_not_allowed() -> None:
+    from pydantic.v1 import BaseModel as BaseModelV1  # pylint: disable=import-outside-toplevel
+
+    with pytest.raises(
+        RuntimeError, match=r"heliclockter 3\.x and higher do not support Pydantic v1.*"
+    ):
+
+        class _DatetimeTzV1Model(BaseModelV1):
+            dt: datetime_tz

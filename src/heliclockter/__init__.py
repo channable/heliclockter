@@ -5,6 +5,9 @@ import datetime as _datetime
 from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, cast
 from zoneinfo import ZoneInfo
 
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterator
+
 # `date` and `timedelta` are exposed for your convenience in case this module is used in combination
 # with an import linter that prohibits importing the `datetime` package anywhere.
 date = _datetime.date
@@ -13,7 +16,7 @@ timedelta = _datetime.timedelta
 
 tz_local = cast("ZoneInfo", _datetime.datetime.now().astimezone().tzinfo)
 
-__version__ = "3.0.0"
+__version__ = "3.0.1"
 
 
 DateTimeTzT = TypeVar("DateTimeTzT", bound="datetime_tz")
@@ -76,6 +79,14 @@ class datetime_tz(_datetime.datetime):
     # We don't require pydantic as a dependency, but add validate logic if it exists.
     try:
         import pydantic
+
+        # To avoid using heliclockter from a `pydantic.v1` context, we raise an exception
+        @classmethod
+        def __get_validators__(cls) -> Iterator[Callable[[Any], datetime_tz | None]]:
+            raise RuntimeError(
+                "heliclockter 3.x and higher do not support Pydantic v1. "
+                "See the README for more information about compatibility."
+            )
 
         if pydantic.__version__[0] != "2":
             raise RuntimeError("Unexpected Pydantic version, expected 2.x")

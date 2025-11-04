@@ -1,3 +1,15 @@
+3.0.1
+-----
+Released 2025-11-04
+
+**Breaking changes**:
+
+- None
+
+Release highlights:
+
+- Raise an exception when attempting to use heliclockter from a `pydantic.v1` context.
+
 3.0.0
 -----
 Released 2025-10-31
